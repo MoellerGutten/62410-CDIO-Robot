@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 # robot.py
+
 import socket
-from ev3dev2 import *
-import EV3Brick
+from ev3dev2.sound import Sound
+
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
@@ -31,7 +34,8 @@ def main():
                 # Example: echo back acknowledgement
                 reply = ("ACK: " + text + "\n").encode("utf-8")
                 conn.sendall(reply)
-                EV3Brick.speaker.beep()
+                sound = Sound()
+                sound.speak('Welcome to the E V 3 dev project!')
 
     finally:
         srv.close()
