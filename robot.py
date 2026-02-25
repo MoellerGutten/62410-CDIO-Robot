@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # robot.py
 
 import socket
