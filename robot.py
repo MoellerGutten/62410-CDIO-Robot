@@ -36,13 +36,13 @@ def main():
                 reply = ("ACK: " + text + "\n").encode("utf-8")
                 conn.sendall(reply)
                 sound = Sound()
-                sound.speak('Welcome to the E V 3 dev project!')
+                sound.speak('Whats up motherfuckers')
 
                 tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
 
                 # drive in a turn for 5 rotations of the outer motor
                 # the first two parameters can be unit classes or percentages.
-                tank_drive.on_for_rotations(SpeedPercent(0), SpeedPercent(100), 10)
+                tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 10)
 
                 # drive in a different turn for 3 seconds
                 tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 3)
