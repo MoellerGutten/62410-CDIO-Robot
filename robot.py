@@ -1,5 +1,7 @@
 # robot.py
 import socket
+from ev3dev2 import *
+import EV3Brick
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
@@ -29,6 +31,7 @@ def main():
                 # Example: echo back acknowledgement
                 reply = ("ACK: " + text + "\n").encode("utf-8")
                 conn.sendall(reply)
+                EV3Brick.speaker.beep()
 
     finally:
         srv.close()
