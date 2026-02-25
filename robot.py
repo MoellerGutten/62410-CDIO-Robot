@@ -36,7 +36,7 @@ def main():
                 reply = ("ACK: " + text + "\n").encode("utf-8")
                 conn.sendall(reply)
                 sound = Sound()
-                sound.speak('Whats up motherfuckers')
+                sound.speak('Jarvis, jerk it a little')
 
                 tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
 
@@ -46,6 +46,20 @@ def main():
 
                 # drive in a different turn for 3 seconds
                 tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 3)
+
+                # drive in a turn for 5 rotations of the outer motor
+                # the first two parameters can be unit classes or percentages.
+                tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 1)
+
+                # drive in a different turn for 3 seconds
+                tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 1)
+
+                # drive in a turn for 5 rotations of the outer motor
+                # the first two parameters can be unit classes or percentages.
+                tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 1)
+
+                # drive in a different turn for 3 seconds
+                tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 1)
 
     finally:
         srv.close()
