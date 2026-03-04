@@ -66,7 +66,6 @@ def main():
                 
                 if len(arguments) == 2:
                     if arguments[0] == "left":
-                        tank_drive.gyro.reset()
                         global monitoring
                         monitoring = True
                         monitor_thread = threading.Thread(target=monitor_gyro, args=(tank_drive.gyro), daemon=True)
@@ -79,7 +78,6 @@ def main():
                         monitoring = False
                         monitor_thread.join(timeout=1)
                     elif arguments[0] == "right":
-                        tank_drive.gyro.reset()
                         monitoring = True
                         monitor_thread = threading.Thread(target=monitor_gyro, args=(tank_drive.gyro,), daemon=True)
                         monitor_thread.start()
