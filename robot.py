@@ -49,7 +49,7 @@ def main():
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
 
                     elif text == "backward":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5)
                     
                     else:
                         sound = Sound()
