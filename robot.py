@@ -50,50 +50,50 @@ def main():
                 print(tank_drive.gyro.angle_and_rate)
                 
                 if len(arguments) == 2:
-                    if arguments == "left":
+                    if arguments[0] == "left":
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(100),
                             target_angle=-arguments[1]
                         )
-                    elif arguments == "right":
+                    elif arguments[0] == "right":
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(30),
                             target_angle=arguments[1]
                         )
-                
-                if arguments == "left":
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
-
-                elif arguments == "right":
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
-
-                elif arguments == "forward":
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
-
-                elif arguments == "backward":
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
-                elif arguments == "softright":
-                    tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
-                elif arguments == "softleft":
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
-
                 else:
-                    sound = Sound()
-                    sound.speak('Jarvis, jerk it a little')
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    if arguments == "left":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
+
+                    elif arguments == "right":
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
+
+                    elif arguments == "forward":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
+
+                    elif arguments == "backward":
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
+                    elif arguments == "softright":
+                        tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
+                    elif arguments == "softleft":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
+
+                    else:
+                        sound = Sound()
+                        sound.speak('Jarvis, jerk it a little')
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
                 
     finally:
         srv.close()
