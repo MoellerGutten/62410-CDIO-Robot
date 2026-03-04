@@ -17,11 +17,15 @@ PORT = 9999        # pick any unused port >1024
 # Global flag to control gyro monitoring thread
 monitoring = False
 
-def monitor_gyro(gyro_sensor, interval=0.1):
+def monitor_gyro(gyro_sensor, interval=0.2):
     """Continuously print gyro angle while monitoring flag is True"""
     while monitoring:
-        angle, rate = gyro_sensor.angle_and_rate
-        print("Gyro - Angle: " +angle+ "°, Rate: " +rate+ "°/s")
+        try:
+            angle, rate = gyro_sensor.angle_and_rate
+            print("Gyro - Angle: " + str(angle) + "°, Rate: " + str(rate) + "°/s")
+        except OSError:
+            # Gyro is temporarily inaccessible (being used by main thread)
+            pass
         time.sleep(interval)
 
 def main():
