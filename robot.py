@@ -38,11 +38,14 @@ def main():
                 data = conn.recv(1024)
                 if not data:
                     break
-                text = data.decode("utf-8").strip().split(";")
+                text = data.decode("utf-8").strip()
                 print("Received:", text)
                 
                 # Example: echo back acknowledgement
                 reply = ("ACK: " + text + "\n").encode("utf-8")
+
+                arguments = text.split(";")
+
                 conn.sendall(reply)
                 print(tank_drive.gyro.angle_and_rate)
                 
