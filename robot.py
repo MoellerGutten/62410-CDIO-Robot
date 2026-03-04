@@ -54,13 +54,13 @@ def main():
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(100),
-                            target_angle=-arguments[1]
+                            target_angle=-int(arguments[1])
                         )
                     elif arguments[0] == "right":
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(30),
-                            target_angle=arguments[1]
+                            target_angle=int(arguments[1])
                         )
                 else:
                     if arguments[0] == "left":
