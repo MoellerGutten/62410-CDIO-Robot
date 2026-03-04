@@ -6,6 +6,8 @@ from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
 from ev3dev2.sensor.lego import TouchSensor
 from ev3dev2.led import Leds
+from ev3dev2.sensor.lego import GyroSensor
+
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
@@ -20,6 +22,12 @@ def main():
 
     print("EV3 server listening on port", PORT)
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+
+        # Initialize the tank's gyro sensor
+    tank_drive.gyro = GyroSensor()
+
+    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
+    tank_drive.gyro.calibrate()
 
     try:
         conn, addr = srv.accept()
@@ -58,6 +66,18 @@ def main():
                         tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
                     elif text == "softleft":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
+                    elif text == "l30":
+                        # Pivot 30 degrees
+                        tank_drive.turn_degrees(
+                            speed=SpeedPercent(30),
+                            target_angle=-30
+                        )
+                    elif text == "r30":
+                        # Pivot 30 degrees
+                        tank_drive.turn_degrees(
+                            speed=SpeedPercent(30),
+                            target_angle=30
+                        )
                     else:
                         sound = Sound()
                         sound.speak('Jarvis, jerk it a little')
