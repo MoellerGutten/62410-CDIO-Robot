@@ -54,7 +54,10 @@ def main():
 
                     elif text == "backward":
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
-                    
+                    elif text == "softright":
+                        tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
+                    elif text == "softleft":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
                     else:
                         sound = Sound()
                         sound.speak('Jarvis, jerk it a little')
