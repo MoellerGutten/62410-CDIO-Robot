@@ -38,63 +38,60 @@ def main():
                 data = conn.recv(1024)
                 if not data:
                     break
-                text = data.decode("utf-8").strip()
+                text = data.decode("utf-8").strip().split(";")
                 print("Received:", text)
                 
                 # Example: echo back acknowledgement
                 reply = ("ACK: " + text + "\n").encode("utf-8")
                 conn.sendall(reply)
+                print(tank_drive.gyro.angle_and_rate)
                 
-
-                try: 
+                if len(text) == 2:
                     if text == "left":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
-                    elif text == "1left":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(0), 3)
-                    
+                        # Pivot 30 degrees
+                        tank_drive.turn_degrees(
+                            speed=SpeedPercent(100),
+                            target_angle=-text[1]
+                        )
                     elif text == "right":
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
-                    elif text == "1right":
-                        tank_drive.on_for_rotations(SpeedPercent(0), SpeedPercent(100), 3)
-
-                    elif text == "forward":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
-
-                    elif text == "backward":
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
-                    elif text == "softright":
-                        tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
-                    elif text == "softleft":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
-                    elif text == "l30":
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(30),
-                            target_angle=-30
+                            target_angle=text[1]
                         )
-                    elif text == "r30":
-                        # Pivot 30 degrees
-                        tank_drive.turn_degrees(
-                            speed=SpeedPercent(30),
-                            target_angle=30
-                        )
-                    else:
-                        sound = Sound()
-                        sound.speak('Jarvis, jerk it a little')
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                except Exception as e:
-                    print("Error executing command")
+                
+                if text == "left":
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
+
+                elif text == "right":
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
+
+                elif text == "forward":
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
+
+                elif text == "backward":
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
+                elif text == "softright":
+                    tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
+                elif text == "softleft":
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
+
+                else:
+                    sound = Sound()
+                    sound.speak('Jarvis, jerk it a little')
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                
     finally:
         srv.close()
 
