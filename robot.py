@@ -73,7 +73,7 @@ def main():
                         # Pivot left
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(100),
-                            target_angle=-int(arguments[1])
+                            target_angle=int(arguments[1])
                         )
                         monitoring = False
                         monitor_thread.join(timeout=1)
@@ -84,7 +84,7 @@ def main():
                         # Pivot right
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(30),
-                            target_angle=int(arguments[1])
+                            target_angle=-int(arguments[1])
                         )
                         monitoring = False
                         monitor_thread.join(timeout=1)
