@@ -49,34 +49,34 @@ def main():
                 conn.sendall(reply)
                 print(tank_drive.gyro.angle_and_rate)
                 
-                if len(text) == 2:
-                    if text == "left":
+                if len(arguments) == 2:
+                    if arguments == "left":
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(100),
-                            target_angle=-text[1]
+                            target_angle=-arguments[1]
                         )
-                    elif text == "right":
+                    elif arguments == "right":
                         # Pivot 30 degrees
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(30),
-                            target_angle=text[1]
+                            target_angle=arguments[1]
                         )
                 
-                if text == "left":
+                if arguments == "left":
                     tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
 
-                elif text == "right":
+                elif arguments == "right":
                     tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
 
-                elif text == "forward":
+                elif arguments == "forward":
                     tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
 
-                elif text == "backward":
+                elif arguments == "backward":
                     tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
-                elif text == "softright":
+                elif arguments == "softright":
                     tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
-                elif text == "softleft":
+                elif arguments == "softleft":
                     tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
 
                 else:
