@@ -1,6 +1,8 @@
 # robot.py
 
 import socket
+import threading
+import time
 from ev3dev2.sound import Sound
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
@@ -11,6 +13,16 @@ from ev3dev2.sensor.lego import GyroSensor
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
+
+# Global flag to control gyro monitoring thread
+monitoring = False
+
+def monitor_gyro(gyro_sensor, interval=0.1):
+    """Continuously print gyro angle while monitoring flag is True"""
+    while monitoring:
+        angle, rate = gyro_sensor.angle_and_rate
+        print(f"Gyro - Angle: {angle}°, Rate: {rate}°/s")
+        time.sleep(interval)
 
 def main():
     # Create TCP socket
@@ -47,21 +59,33 @@ def main():
                 arguments = text.split(";")
 
                 conn.sendall(reply)
-                print(tank_drive.gyro.angle_and_rate)
                 
                 if len(arguments) == 2:
                     if arguments[0] == "left":
-                        # Pivot 30 degrees
+                        tank_drive.gyro.reset()
+                        global monitoring
+                        monitoring = True
+                        monitor_thread = threading.Thread(target=monitor_gyro, args=(tank_drive.gyro,), daemon=True)
+                        monitor_thread.start()
+                        # Pivot left
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(100),
                             target_angle=-int(arguments[1])
                         )
+                        monitoring = False
+                        monitor_thread.join(timeout=1)
                     elif arguments[0] == "right":
-                        # Pivot 30 degrees
+                        tank_drive.gyro.reset()
+                        monitoring = True
+                        monitor_thread = threading.Thread(target=monitor_gyro, args=(tank_drive.gyro,), daemon=True)
+                        monitor_thread.start()
+                        # Pivot right
                         tank_drive.turn_degrees(
                             speed=SpeedPercent(30),
                             target_angle=int(arguments[1])
                         )
+                        monitoring = False
+                        monitor_thread.join(timeout=1)
                 else:
                     if arguments[0] == "left":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
