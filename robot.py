@@ -40,12 +40,15 @@ def main():
 
                 try: 
                     if text == "left":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
                     
-                    if text == "right":
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 1)
+                    elif text == "right":
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
 
-                    if text == "forward":
+                    elif text == "forward":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
+
+                    elif text == "backward":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
                     
                     else:
