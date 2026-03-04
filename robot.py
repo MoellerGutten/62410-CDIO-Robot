@@ -21,7 +21,7 @@ def monitor_gyro(gyro_sensor, interval=0.1):
     """Continuously print gyro angle while monitoring flag is True"""
     while monitoring:
         angle, rate = gyro_sensor.angle_and_rate
-        print(f"Gyro - Angle: {angle}°, Rate: {rate}°/s")
+        print("Gyro - Angle: " +angle+ "°, Rate: " +rate+ "°/s")
         time.sleep(interval)
 
 def main():
