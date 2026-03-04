@@ -31,35 +31,32 @@ def main():
                     break
                 text = data.decode("utf-8").strip()
                 print("Received:", text)
-
+                
                 # Example: echo back acknowledgement
                 reply = ("ACK: " + text + "\n").encode("utf-8")
                 conn.sendall(reply)
-                sound = Sound()
-                sound.speak('Jarvis, jerk it a little')
+                
 
                 tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
 
-                # drive in a turn for 5 rotations of the outer motor
-                # the first two parameters can be unit classes or percentages.
-                tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 10)
+                if text == "left":
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 1)
+                
+                if text == "right":
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 1)
 
-                # drive in a different turn for 3 seconds
-                tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 3)
+                if text == "forward":
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
+                
+                else:
+                    sound = Sound()
+                    sound.speak('Jarvis, jerk it a little')
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
 
-                # drive in a turn for 5 rotations of the outer motor
-                # the first two parameters can be unit classes or percentages.
-                tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 1)
-
-                # drive in a different turn for 3 seconds
-                tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 1)
-
-                # drive in a turn for 5 rotations of the outer motor
-                # the first two parameters can be unit classes or percentages.
-                tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 1)
-
-                # drive in a different turn for 3 seconds
-                tank_drive.on_for_seconds(SpeedPercent(100), SpeedPercent(100), 1)
+        
 
     finally:
         srv.close()
