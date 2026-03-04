@@ -64,7 +64,7 @@ def main():
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
                 except Exception as e:
-                    print(f"Error executing command")
+                    print("Error executing command")
     finally:
         srv.close()
 
