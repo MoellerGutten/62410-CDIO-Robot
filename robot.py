@@ -22,7 +22,7 @@ def monitor_gyro(gyro_sensor, interval=0.2):
     while monitoring:
         try:
             angle, rate = gyro_sensor.angle_and_rate
-            print("Gyro - Angle: " + str(angle) + "°, Rate: " + str(rate) + "°/s")
+            print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
         except OSError:
             # Gyro is temporarily inaccessible (being used by main thread)
             pass
