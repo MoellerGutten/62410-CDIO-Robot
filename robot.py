@@ -19,6 +19,7 @@ def main():
     srv.listen(1)
 
     print("EV3 server listening on port", PORT)
+    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
 
     try:
         conn, addr = srv.accept()
@@ -37,35 +38,33 @@ def main():
                 conn.sendall(reply)
                 
 
-                tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+                try: 
+                    if text == "left":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 1)
+                    
+                    if text == "right":
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 1)
 
-                if text == "left":
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 1)
-                
-                if text == "right":
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 1)
-
-                if text == "forward":
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
-                
-                else:
-                    sound = Sound()
-                    sound.speak('Jarvis, jerk it a little')
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
-                    tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-
-        
-
+                    if text == "forward":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5)
+                    
+                    else:
+                        sound = Sound()
+                        sound.speak('Jarvis, jerk it a little')
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
+                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
+                except Exception as e:
+                    print(f"Error executing ev3dev command: {e}")
     finally:
         srv.close()
 
