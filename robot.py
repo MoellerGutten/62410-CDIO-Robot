@@ -41,9 +41,13 @@ def main():
                 try: 
                     if text == "left":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
+                    elif text == "1left":
+                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(0), 3)
                     
                     elif text == "right":
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
+                    elif text == "1right":
+                        tank_drive.on_for_rotations(SpeedPercent(0), SpeedPercent(100), 3)
 
                     elif text == "forward":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
