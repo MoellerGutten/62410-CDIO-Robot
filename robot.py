@@ -65,7 +65,7 @@ def main():
                         tank_drive.gyro.reset()
                         global monitoring
                         monitoring = True
-                        monitor_thread = threading.Thread(target=monitor_gyro, args=(tank_drive.gyro,), daemon=True)
+                        monitor_thread = threading.Thread(target=monitor_gyro, args=(tank_drive.gyro), daemon=True)
                         monitor_thread.start()
                         # Pivot left
                         tank_drive.turn_degrees(
