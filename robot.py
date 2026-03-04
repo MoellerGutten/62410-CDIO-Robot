@@ -63,20 +63,20 @@ def main():
                             target_angle=arguments[1]
                         )
                 else:
-                    if arguments == "left":
+                    if arguments[0] == "left":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
 
-                    elif arguments == "right":
+                    elif arguments[0] == "right":
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
 
-                    elif arguments == "forward":
+                    elif arguments[0] == "forward":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
 
-                    elif arguments == "backward":
+                    elif arguments[0] == "backward":
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
-                    elif arguments == "softright":
+                    elif arguments[0] == "softright":
                         tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
-                    elif arguments == "softleft":
+                    elif arguments[0] == "softleft":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
 
                     else:
