@@ -64,7 +64,6 @@ def main():
                 reply = ("ACK: " + text + "\n").encode("utf-8")
 
                 arguments = text.split(";")
-                ballMotor.
 
                 conn.sendall(reply)
                 
