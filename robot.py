@@ -5,6 +5,8 @@
 import socket
 import threading
 import time
+from commands import *
+from sequences import *
 from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
 from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
@@ -57,17 +59,57 @@ def main():
                 data = conn.recv(1024)
                 if not data:
                     break
-                text = data.decode("utf-8").strip()
-                print("Received:", text)
+                msg = data.decode("utf-8").strip()
+                print("Received:", msg)
                 
                 # Example: echo back acknowledgement
-                reply = ("ACK: " + text + "\n").encode("utf-8")
+                # reply = ("ACK: " + msg + "\n").encode("utf-8")
+                # conn.sendall(reply)
 
-                arguments = text.split(";")
+                instructions = msg.split("&")
+                for instruction in instructions:
+                    temp = instruction.split(":")
+                    command = temp[0]
+                    args = temp[1].split(";")
+                    # Arguments in order:
+                    # 1. inst_id, 2. rspeed, 3. lspeed, 4. speed, 5. rotations, 
+                    # 6. pos, 7. seconds, 8. degrees, 9. brake, 10. block, 11. talk
+                    inst_id: str = args[0]
+                    rspeed: int = int(args[1])
+                    lspeed: int = int(args[2])
+                    speed: int = int(args[3])
+                    rotations: float = float(args[4])
+                    pos: float = float(args[5])
+                    seconds: float = float(args[6])
+                    degrees: float = float(args[7])
+                    brake: bool = bool(args[8])
+                    block: bool = bool(args[9])
+                    talk: str = args[10]
+                    
+                    match command:
+                        case "c_fwd":
+                            forward(speed, rotations, pos, seconds, degrees, brake, block)
+                        case "c_bwd":
+                            backward(speed, rotations, pos, seconds, degrees, brake, block)
+                        case "c_tl":
+                            turn_left(lspeed, rspeed, rotations, pos, seconds, degrees, brake, block)
+                        case "c_tr":
+                            turn_right(lspeed, rspeed, rotations, pos, seconds, degrees, brake, block)
+                        case "c_bin":
+                            balls_in(speed, brake, block)
+                        case "c_bout":
+                            balls_out(speed, brake, block)
+                        case "c_boff":
+                            balls_off(brake, block)
+                        case "c_t":
+                            talk_function(talk)
+                        case "s_bust":
+                            bust(speed, brake, block)
+                        # TODO: add request functions here
+                        case _:
+                            send_nack(command)
                 
-                
-                conn.sendall(reply)
-                
+                """
                 if len(arguments) == 2:
                     if arguments[0] == "left":
                         global monitoring
@@ -133,7 +175,8 @@ def main():
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
-                
+                        """
+
     finally:
         srv.close()
 
