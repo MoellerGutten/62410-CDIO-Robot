@@ -93,26 +93,26 @@ def main():
                         monitoring = False
                         monitor_thread.join(timeout=1)
                 else:
-                    if arguments[0] == "left":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(-100), 3)
+                    if arguments[0] == "l":
+                        tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(-50), 1)
 
-                    elif arguments[0] == "right":
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(100), 3)
+                    elif arguments[0] == "r":
+                        tank_drive.on_for_rotations(SpeedPercent(-50), SpeedPercent(50), 1)
 
-                    elif arguments[0] == "forward":
-                        tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
+                    elif arguments[0] == "f":
+                        tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(50), 1, False, False)
 
-                    elif arguments[0] == "ballOn":
+                    elif arguments[0] == "on":
                         ballMotor.on(SpeedPercent(-100))
-                    elif arguments[0] == "ballOff":
+                    elif arguments[0] == "off":
                         ballMotor.off()
-                    elif arguments[0] == "ballOut":
+                    elif arguments[0] == "out":
                         ballMotor.on_for_rotations(SpeedPercent(100), 10)
                         ballMotor.on(SpeedPercent(-100))
 
 
-                    elif arguments[0] == "backward":
-                        tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
+                    elif arguments[0] == "b":
+                        tank_drive.on_for_rotations(SpeedPercent(-50), SpeedPercent(-50), 1, False, False)
                     elif arguments[0] == "softright":
                         tank_drive.on_for_rotations(SpeedPercent(50), SpeedPercent(100), 10)
                     elif arguments[0] == "softleft":
