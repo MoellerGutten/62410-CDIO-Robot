@@ -1,9 +1,11 @@
 # robot.py
 
+#!/usr/bin/env python3
+
 import socket
 import threading
 import time
-from ev3dev2.sound import Sound
+from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
 from ev3dev2.sensor.lego import TouchSensor
