@@ -105,7 +105,7 @@ def main():
                     elif arguments[0] == "ballOn":
                         ballMotor.on(SpeedPercent(-100))
                     elif arguments[0] == "ballOff":
-                        ballMotor.stop_action()   
+                        ballMotor.off()
 
                     elif arguments[0] == "backward":
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
