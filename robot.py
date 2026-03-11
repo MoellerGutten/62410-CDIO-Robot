@@ -40,7 +40,7 @@ def main():
 
     print("EV3 server listening on port", PORT)
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    ballMotor = MediumMotor(OUTPUT_C, COMMAND_RUN_FOREVER=True)
+    ballMotor = MediumMotor(OUTPUT_C)
 
         # Initialize the tank's gyro sensor
     tank_drive.gyro = GyroSensor()
