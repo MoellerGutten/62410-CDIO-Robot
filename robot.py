@@ -6,7 +6,7 @@ import socket
 import threading
 import time
 from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
-from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_D, SpeedPercent, MoveTank
+from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
 from ev3dev2.sensor.lego import TouchSensor
 from ev3dev2.led import Leds
@@ -40,7 +40,7 @@ def main():
 
     print("EV3 server listening on port", PORT)
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    ballMotor = MediumMotor(OUTPUT_D, COMMAND_RUN_FOREVER=True)
+    ballMotor = MediumMotor(OUTPUT_C, COMMAND_RUN_FOREVER=True)
 
         # Initialize the tank's gyro sensor
     tank_drive.gyro = GyroSensor()
