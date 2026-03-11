@@ -5,7 +5,6 @@
 import socket
 import threading
 import time
-from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
 from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B, SpeedPercent, MoveTank
 from ev3dev2.sensor import INPUT_1
 from ev3dev2.sensor.lego import TouchSensor
@@ -108,8 +107,6 @@ def main():
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(50), 10)
 
                     else:
-                        sound = Sound()
-                        sound.speak('Jarvis, jerk it a little')
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 0.1)
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 0.1)
