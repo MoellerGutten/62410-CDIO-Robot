@@ -64,7 +64,7 @@ def main():
                 reply = ("ACK: " + text + "\n").encode("utf-8")
 
                 arguments = text.split(";")
-                ballMotor.on(SpeedPercent(50))
+                
                 
                 conn.sendall(reply)
                 
@@ -101,6 +101,11 @@ def main():
 
                     elif arguments[0] == "forward":
                         tank_drive.on_for_rotations(SpeedPercent(100), SpeedPercent(100), 5, False, False)
+
+                    elif arguments[0] == "ballOn":
+                        ballMotor.on(SpeedPercent(-100))
+                    elif arguments[0] == "ballOff":
+                        ballMotor.on(SpeedPercent(100))
 
                     elif arguments[0] == "backward":
                         tank_drive.on_for_rotations(SpeedPercent(-100), SpeedPercent(-100), 5, False, False)
