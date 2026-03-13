@@ -26,11 +26,11 @@ def forward(speed, rotations, pos, seconds, brake, block):
 
 def backward(speed, rotations, pos, seconds, brake, block):
     if rotations:
-        tank_drive.on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
+        tank_drive.on_for_rotations(left_speed=-speed, right_speed=-speed, rotations=rotations, brake=brake, block=block)
     elif pos:
-        tank_drive.on_to_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
+        tank_drive.on_to_position(left_speed=-speed, right_speed=-speed, pos=pos, brake=brake, block=block)
     elif seconds:
-        tank_drive.on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
+        tank_drive.on_for_seconds(left_speed=-speed, right_speed=-speed, seconds=seconds, brake=brake, block=block)
     else:
         return
     

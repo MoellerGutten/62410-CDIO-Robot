@@ -149,8 +149,8 @@ def main():
                             msg = "Unrecognized command"
                             reply = ("NACK: " + msg + "\n").encode("utf-8")
                             conn.sendall(reply)
-                        reply = ("ACK: " + command + "\n").encode("utf-8")
-                        conn.sendall(reply)
+                    reply = ("ACK: " + str(instructions) + "\n").encode("utf-8")
+                    conn.sendall(reply)
                 """
                 if len(arguments) == 2:
                     if arguments[0] == "left":
