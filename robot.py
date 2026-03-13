@@ -41,14 +41,7 @@ def main():
     srv.listen(1)
 
     print("EV3 server listening on port", PORT)
-    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    ballMotor = MediumMotor(OUTPUT_C)
-    
-        # Initialize the tank's gyro sensor
-    tank_drive.gyro = GyroSensor()
-
-    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
-    tank_drive.gyro.calibrate()
+   
 
     try:
         conn, addr = srv.accept()
@@ -69,46 +62,95 @@ def main():
                 instructions = msg.split("&")
                 for instruction in instructions:
                     temp = instruction.split(":")
+                    if len(temp) < 2:
+                        msg = "Invalid format"
+                        reply = ("NACK: " + msg + "\n").encode("utf-8")
+                        conn.sendall(reply)
+                        continue
                     command = temp[0]
                     args = temp[1].split(";")
-                    # Arguments in order:
-                    # 1. inst_id, 2. rspeed, 3. lspeed, 4. speed, 5. rotations, 
-                    # 6. pos, 7. seconds, 8. degrees, 9. brake, 10. block, 11. talk
-                    inst_id: str = args[0]
-                    rspeed: int = int(args[1])
-                    lspeed: int = int(args[2])
-                    speed: int = int(args[3])
-                    rotations: float = float(args[4])
-                    pos: float = float(args[5])
-                    seconds: float = float(args[6])
-                    degrees: float = float(args[7])
-                    brake: bool = bool(args[8])
-                    block: bool = bool(args[9])
-                    talk: str = args[10]
+                    print(args)
+                    if len(args) < 11:
+                        msg = "Not enough arguments"
+                        reply = ("NACK: " + msg + "\n").encode("utf-8")
+                        conn.sendall(reply)
+                        # Arguments in order:
+                        # 1. inst_id, 2. rspeed, 3. lspeed, 4. speed, 5. rotations, 
+                        # 6. pos, 7. seconds, 8. degrees (for turn_degrees(...) ), 9. brake, 10. block, 11. talk
+                    else:
+                        if args[0]:
+                            inst_id = args[0]
+                        else: 
+                            inst_id = None
+                        if args[1]:
+                            rspeed = int(args[1])
+                        else:
+                            rspeed = None
+                        if args[2]:
+                            lspeed = int(args[2])
+                        else:
+                            lspeed = None
+                        if args[3]:
+                            speed = int(args[3])
+                        else:
+                            speed = None
+                        if args[4]:
+                            rotations = float(args[4])
+                        else:
+                            rotations = None
+                        if args[5]:
+                            pos = float(args[5])
+                        else: 
+                            pos = None
+                        if args[6]:
+                            seconds = float(args[6])
+                        else:
+                            seconds = None
+                        if args[7]:
+                            degrees = float(args[7])
+                        else: 
+                            degrees = None
+                        if args[8]:
+                            brake = bool(args[8])
+                        else:
+                            brake = True
+                        if args[9]:
+                            block = bool(args[9])
+                        # TODO: default blocking?
+                        else:
+                            block = False
+                        if args[10]:
+                            talk = args[10]
+                        else:
+                            talk = "Give me something to say you ass jacker"
                     
-                    match command:
-                        case "c_fwd":
-                            forward(speed, rotations, pos, seconds, degrees, brake, block)
-                        case "c_bwd":
-                            backward(speed, rotations, pos, seconds, degrees, brake, block)
-                        case "c_tl":
-                            turn_left(lspeed, rspeed, rotations, pos, seconds, degrees, brake, block)
-                        case "c_tr":
-                            turn_right(lspeed, rspeed, rotations, pos, seconds, degrees, brake, block)
-                        case "c_bin":
-                            balls_in(speed, brake, block)
-                        case "c_bout":
-                            balls_out(speed, brake, block)
-                        case "c_boff":
+                        if command == "c_fwd" and speed and (rotations or pos or seconds):
+                            forward(speed, rotations, pos, seconds, brake, block)
+                        elif command == "c_bwd" and speed and (rotations or pos or seconds):
+                            backward(speed, rotations, pos, seconds, brake, block)
+                        elif command == "c_tl":
+                            turn_left(speed, lspeed, rspeed, rotations, pos, seconds, degrees, brake, block)
+                        elif command == "c_tr":
+                            turn_right(speed, lspeed, rspeed, rotations, pos, seconds, degrees, brake, block)
+                        elif command == "c_bin":
+                            balls_in(speed, rotations, seconds, brake, block)
+                        elif command == "c_bout":
+                            balls_out(speed, rotations, seconds, brake, block)
+                        elif command == "c_boff":
                             balls_off(brake, block)
-                        case "c_t":
+                        elif command == "c_t":
                             talk_function(talk)
-                        case "s_bust":
-                            bust(speed, brake, block)
+                        elif command == "s_bust":
+                            bust(speed)
                         # TODO: add request functions here
-                        case _:
-                            send_nack(command)
-                
+                        else:
+                            # TODO: implement send_nack
+                            # send_nack(command)
+                            msg = "Unrecognized command"
+                            reply = ("NACK: " + msg + "\n").encode("utf-8")
+                            conn.sendall(reply)
+                        reply = ("ACK: " + command + "\n").encode("utf-8")
+                        conn.sendall(reply)
                 """
                 if len(arguments) == 2:
                     if arguments[0] == "left":
