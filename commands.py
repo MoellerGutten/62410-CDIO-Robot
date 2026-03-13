@@ -15,30 +15,31 @@ tank_drive.gyro = GyroSensor()
 
 def forward(speed, rotations, pos, seconds, brake, block):
     if rotations:
-        tank_drive.on_for_rotations(speed, rotations, brake, block)
+        tank_drive.on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
     elif pos:
-        tank_drive.on_to_position(speed, pos, brake, block)
+        tank_drive.on_to_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
     elif seconds:
-        tank_drive.on_for_seconds(speed, seconds, brake, block)
+        tank_drive.on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
     else:
         return
         
 
 def backward(speed, rotations, pos, seconds, brake, block):
     if rotations:
-        tank_drive.on_for_rotations(speed, rotations, brake, block)
+        tank_drive.on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
     elif pos:
-        tank_drive.on_to_position(speed, pos, brake, block)
+        tank_drive.on_to_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
     elif seconds:
-        tank_drive.on_for_seconds(speed, seconds, brake, block)
+        tank_drive.on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
     else:
         return
+    
 # TODO: Should change to target_angle when protocol is updated
 def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, degrees, brake, block):
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
     if degrees:
-        tank_drive.turn_left(speed, degrees, brake)
+        tank_drive.turn_left(speed=speed, degrees=degrees, brake=brake)
     elif  rotations:
         tank_drive.on_for_rotations(lspeed, rspeed, rotations, brake, block)
     elif pos:
