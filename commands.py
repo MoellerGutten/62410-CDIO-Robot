@@ -90,3 +90,4 @@ def balls_off(brake, block):
 def talk_function(talk):
     sound = Sound()
     sound.speak(talk)
+    
