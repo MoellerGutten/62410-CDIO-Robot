@@ -7,7 +7,7 @@ import threading
 import time
 from commands import *
 from sequences import *
-from protocol import Instruction, Message, Acknowledgement, serialize_ack, parse_message
+from protocol import Instruction, InstructionType, Message, Acknowledgement, serialize_ack, parse_message
 """
 from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
 from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
