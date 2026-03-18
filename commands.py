@@ -5,12 +5,14 @@ from ev3dev2.sensor.lego import TouchSensor
 from ev3dev2.led import Leds
 from ev3dev2.sensor.lego import GyroSensor
 
+try:
+    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+    ballMotor = MediumMotor(OUTPUT_C)
 
-tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-ballMotor = MediumMotor(OUTPUT_C)
-
-    # Initialize the tank's gyro sensor
-tank_drive.gyro = GyroSensor()
+        # Initialize the tank's gyro sensor
+    tank_drive.gyro = GyroSensor()
+except:
+    pass
 
 
 def forward(speed, rotations, pos, seconds, brake, block):
@@ -90,4 +92,3 @@ def balls_off(brake, block):
 def talk_function(talk):
     sound = Sound()
     sound.speak(talk)
-    

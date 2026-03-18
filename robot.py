@@ -8,14 +8,7 @@ import time
 from commands import *
 from sequences import *
 from protocol import Instruction, InstructionType, Message, Acknowledgement, serialize_ack, parse_message
-"""
-from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
-from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
-from ev3dev2.sensor import INPUT_1
-from ev3dev2.sensor.lego import TouchSensor
-from ev3dev2.led import Leds
-from ev3dev2.sensor.lego import GyroSensor
-"""
+
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
