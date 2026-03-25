@@ -1,13 +1,9 @@
-# robot.py
-
 #!/usr/bin/env python3
 
-import socket
-import threading
-import time
+import socket as socket
 from commands import *
 from sequences import *
-from protocol import Instruction, InstructionType, Message, Acknowledgement, serialize_ack, parse_message
+from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message
 
 
 HOST = ""          # empty string = listen on all interfaces
@@ -37,6 +33,8 @@ def main():
                 if not data:
                     break
                 msg = data.decode("utf-8").strip()
+                # Debug
+                print(msg)
                 msg = parse_message(msg)
 
                 cmd = msg.instruction.name
@@ -44,27 +42,27 @@ def main():
                 args = msg.instruction.args
 
                 if type == InstructionType.COMMAND:
-                    if cmd == "c_fwd" :
+                    if cmd == "fwd" :
                         forward(args.speed, args.rotations, args.pos, args.seconds, args.brake, args.block)
-                    elif cmd == "c_bwd" and args.speed and (args.rotations or args.pos or args.seconds):
+                    elif cmd == "bwd" and args.speed and (args.rotations or args.pos or args.seconds):
                         backward(args.speed, args.rotations, args.pos, args.seconds, args.brake, args.block)
-                    elif cmd == "c_tl":
+                    elif cmd == "tl":
                         turn_left(args.speed, args.lspeed, args.rspeed, args.rotations, args.pos, args.seconds, args.turn_angle, args.brake, args.block)
-                    elif cmd == "c_tr":
+                    elif cmd == "tr":
                         turn_right(args.speed, args.lspeed, args.rspeed, args.rotations, args.pos, args.seconds, args.turn_angle, args.brake, args.block)
-                    elif cmd == "c_bin":
+                    elif cmd == "bin":
                         balls_in(args.speed, args.rotations, args.seconds, args.brake, args.block)
-                    elif cmd == "c_bout":
+                    elif cmd == "bout":
                         balls_out(args.speed, args.rotations, args.seconds, args.brake, args.block)
-                    elif cmd == "c_boff":
+                    elif cmd == "boff":
                         balls_off(args.brake, args.block)
-                    elif cmd == "c_t":
+                    elif cmd == "t":
                         talk_function(args.talk)
                     else:
                         reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", cmd]))
                         conn.sendall(reply)
                 elif type == InstructionType.SEQUENCE:
-                        if cmd == "s_bust":
+                        if cmd == "bust":
                             bust(args.speed)
                         else:
                             reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", cmd]))
