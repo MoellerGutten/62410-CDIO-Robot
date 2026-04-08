@@ -3,7 +3,7 @@
 import socket as socket
 from commands import *
 from sequences import *
-from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName
+from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName
 
 
 HOST = ""          # empty string = listen on all interfaces
@@ -40,48 +40,15 @@ def main():
                 cmd = msg.instruction.name
                 type = msg.instruction.type
                 args = msg.instruction.args
+
+                # Sends ACK or NACK before starting the instruction below
                 if type == InstructionType.COMMAND:
-                    if cmd == CommandName.FORWARD:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        forward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
-                    elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        backward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
-                    elif cmd == CommandName.TANK_LEFT:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        turn(-args.lspeed, -args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
-                    elif cmd == CommandName.TANK_RIGHT:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        turn(args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
-                    elif cmd == CommandName.BALL_IN:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        balls_in(args.speed, args.rotations, args.seconds, args.brake, args.block)
-                    elif cmd == CommandName.BALL_OUT:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        balls_out(args.speed, args.rotations, args.seconds, args.brake, args.block)
-                    elif cmd == CommandName.BALL_OFF:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        balls_off(args.brake, args.block)
-                    elif cmd == CommandName.TALK:
-                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                        conn.sendall(reply)
-                        talk_function(args.talk)
-                    else:
+                    if cmd not in [CommandName.FORWARD, CommandName.BACKWARD, CommandName.TANK_LEFT, CommandName.TANK_RIGHT, 
+                               CommandName.BALL_IN, CommandName.BALL_OUT, CommandName.BALL_OFF, CommandName.TALK]:
                         reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", str(cmd)])).encode("utf-8")
                         conn.sendall(reply)
                 elif type == InstructionType.SEQUENCE:
-                        if cmd == "bust":
-                            reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                            conn.sendall(reply)
-                            bust(args.speed)
-                        else:
+                        if cmd not in [SequenceName.EJECT]:
                             reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", str(cmd)])).encode("utf-8")
                             conn.sendall(reply)
                 elif type == InstructionType.REQUEST:
@@ -90,6 +57,34 @@ def main():
                 else:
                     reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", str(cmd)])).encode("utf-8")
                     conn.sendall(reply)
+
+                reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                conn.sendall(reply)
+
+                if type == InstructionType.COMMAND:
+                    if cmd == CommandName.FORWARD:
+                        forward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
+                    elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
+                        backward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
+                    elif cmd == CommandName.TANK_LEFT:
+                        turn(-args.lspeed, -args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                    elif cmd == CommandName.TANK_RIGHT:
+                        turn(args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                    elif cmd == CommandName.BALL_IN:
+                        balls_in(args.speed, args.rotations, args.seconds, args.brake, args.block)
+                    elif cmd == CommandName.BALL_OUT:
+                        balls_out(args.speed, args.rotations, args.seconds, args.brake, args.block)
+                    elif cmd == CommandName.BALL_OFF:
+                        balls_off(args.brake, args.block)
+                    elif cmd == CommandName.TALK:
+                        talk_function(args.talk)
+                elif type == InstructionType.SEQUENCE:
+                        if cmd == "bust":
+                            bust(args.speed)
+                elif type == InstructionType.REQUEST:
+                    pass
+                    # TODO: add request functions here
+
 
     finally:
         srv.close()
