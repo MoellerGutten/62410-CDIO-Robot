@@ -69,7 +69,7 @@ def main():
                     elif cmd == CommandName.TANK_LEFT:
                         turn(-args.lspeed, -args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                     elif cmd == CommandName.TANK_RIGHT:
-                        turn(args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                        turn(args.speed, args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                     elif cmd == CommandName.BALL_IN:
                         balls_in(args.speed, args.rotations, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.BALL_OUT:

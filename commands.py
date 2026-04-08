@@ -40,17 +40,16 @@ def backward(speed, rotations, pos, seconds, brake, block):
         return
     
 
-def turn(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
+def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     if target_angle:
-        while tank_drive.gyro.angle < target_angle:
-            try:
-                angle, rate = tank_drive.gyro.angle_and_rate
-                print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
-            except OSError:
-                # Gyro is temporarily inaccessible (being used by main thread)
-                pass
-            tank_drive.on(lspeed, rspeed)
-        tank_drive.off(brake=brake)
+        try:
+            tank_drive.turn_degrees(speed=speed, target_angle=target_angle, brake=brake)
+            angle, rate = tank_drive.gyro.angle_and_rate
+            print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
+        except OSError:
+            # Gyro is temporarily inaccessible (being used by main thread)
+            pass
+
     elif  seconds:
         tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
     elif rotations:
