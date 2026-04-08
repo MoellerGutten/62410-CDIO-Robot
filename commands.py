@@ -36,12 +36,20 @@ def backward(speed, rotations, pos, seconds, brake, block):
     else:
         return
     
-# TODO: Should change to target_angle when protocol is updated
-def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
+
+def turn(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
     if target_angle:
-        tank_drive.turn_left(speed=speed, degrees=target_angle, brake=brake)
+        while tank_drive.gyro.angle() < target_angle:
+            try:
+                angle, rate = tank_drive.gyro.angle_and_rate
+                print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
+            except OSError:
+                # Gyro is temporarily inaccessible (being used by main thread)
+                pass
+            tank_drive.on(lspeed, rspeed)
+        tank_drive.off(brake=brake)
     elif  seconds:
         tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
     elif rotations:
@@ -51,20 +59,6 @@ def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brak
     else:
         return
     
-
-def turn_right(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
-    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
-    tank_drive.gyro.calibrate()
-    if target_angle:
-        tank_drive.turn_right(speed=speed, degrees=target_angle, brake=brake)
-    elif  seconds:
-        tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
-    elif rotations:
-        tank_drive.on_for_rotations(lspeed, rspeed, rotations, brake, block)
-    elif pos:
-        tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
-    else:
-        return
     
 # Speed is negative because of the gearing on the current robot
 def balls_in(speed, rotations, seconds, brake, block):
