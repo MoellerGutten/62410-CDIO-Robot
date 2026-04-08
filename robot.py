@@ -44,7 +44,7 @@ def main():
                 # Sends ACK or NACK before starting the instruction below
                 if type == InstructionType.COMMAND:
                     if cmd not in [CommandName.FORWARD, CommandName.BACKWARD, CommandName.TANK_LEFT, CommandName.TANK_RIGHT, 
-                               CommandName.BALL_IN, CommandName.BALL_OUT, CommandName.BALL_OFF, CommandName.TALK]:
+                               CommandName.BALL_IN, CommandName.BALL_OUT, CommandName.BALL_OFF, CommandName.PANIC, CommandName.TALK]:
                         reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", str(cmd)])).encode("utf-8")
                         conn.sendall(reply)
                 elif type == InstructionType.SEQUENCE:
@@ -76,6 +76,8 @@ def main():
                         balls_out(args.speed, args.rotations, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.BALL_OFF:
                         balls_off(args.brake, args.block)
+                    elif cmd == CommandName.PANIC:
+                        panic(args.brake)
                     elif cmd == CommandName.TALK:
                         talk_function(args.talk)
                 elif type == InstructionType.SEQUENCE:

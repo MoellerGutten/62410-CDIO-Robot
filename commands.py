@@ -81,6 +81,10 @@ def balls_out(speed, rotations, seconds, brake, block):
         # Default out
         ballMotor.on(-speed, brake, block)
 
+
+def panic(brake):
+    tank_drive.off(brake)
+
 def balls_off(brake, block):
     ballMotor.off()
 
