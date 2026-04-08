@@ -41,7 +41,7 @@ def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brak
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
     if target_angle:
-        tank_drive.turn_left(speed=speed, target_angle=target_angle, brake=brake)
+        tank_drive.turn_left(speed=speed, degrees=target_angle, brake=brake)
     elif  seconds:
         tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
     elif rotations:
@@ -56,7 +56,7 @@ def turn_right(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, bra
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
     if target_angle:
-        tank_drive.turn_left(speed=speed, target_angle=target_angle, brake=brake)
+        tank_drive.turn_right(speed=speed, degrees=target_angle, brake=brake)
     elif  seconds:
         tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
     elif rotations:
