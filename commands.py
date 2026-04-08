@@ -11,6 +11,9 @@ try:
 
         # Initialize the tank's gyro sensor
     tank_drive.gyro = GyroSensor()
+
+    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
+    tank_drive.gyro.calibrate()
 except:
     pass
 
@@ -38,8 +41,6 @@ def backward(speed, rotations, pos, seconds, brake, block):
     
 
 def turn(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
-    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
-    tank_drive.gyro.calibrate()
     if target_angle:
         while tank_drive.gyro.angle < target_angle:
             try:
