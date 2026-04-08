@@ -69,22 +69,22 @@ def turn_right(speed, rspeed, lspeed, rotations, pos, seconds, turn_angle, brake
 # Speed is negative because of the gearing on the current robot
 def balls_in(speed, rotations, seconds, brake, block):
     if seconds:
-        ballMotor.on_for_seconds(-speed, seconds, brake, block)
-    elif rotations:
-        ballMotor.on_for_rotations(-speed, rotations, brake, block)
-    else:
-        # Default in
-        ballMotor.on(-speed, brake, block)
-    
-
-def balls_out(speed, rotations, seconds, brake, block):
-    if seconds:
         ballMotor.on_for_seconds(speed, seconds, brake, block)
     elif rotations:
         ballMotor.on_for_rotations(speed, rotations, brake, block)
     else:
-        # Default out
+        # Default in
         ballMotor.on(speed, brake, block)
+    
+
+def balls_out(speed, rotations, seconds, brake, block):
+    if seconds:
+        ballMotor.on_for_seconds(-speed, seconds, brake, block)
+    elif rotations:
+        ballMotor.on_for_rotations(-speed, rotations, brake, block)
+    else:
+        # Default out
+        ballMotor.on(-speed, brake, block)
 
 def balls_off(brake, block):
     ballMotor.off()
