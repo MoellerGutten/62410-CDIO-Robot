@@ -82,7 +82,7 @@ def balls_out(speed, rotations, seconds, brake, block):
 
 
 def panic(brake):
-    tank_drive.stop(brake)
+    tank_drive.off([LargeMotor(OUTPUT_A), LargeMotor(OUTPUT_B)],brake)
 
 def balls_off(brake, block):
     ballMotor.stop()
