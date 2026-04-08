@@ -43,6 +43,7 @@ def backward(speed, rotations, pos, seconds, brake, block):
 def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     if target_angle:
         try:
+            # TODO: This is always blocking. Should be removed or handled otherwise because the gyro doesnt work lmao
             tank_drive.turn_degrees(speed=speed, target_angle=target_angle, brake=brake)
             angle, rate = tank_drive.gyro.angle_and_rate
             print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
