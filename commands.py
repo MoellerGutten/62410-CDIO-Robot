@@ -37,11 +37,11 @@ def backward(speed, rotations, pos, seconds, brake, block):
         return
     
 # TODO: Should change to target_angle when protocol is updated
-def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, turn_angle, brake, block):
+def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
-    if turn_angle:
-        tank_drive.turn_left(speed=speed, turn_angle=turn_angle, brake=brake)
+    if target_angle:
+        tank_drive.turn_left(speed=speed, target_angle=target_angle, brake=brake)
     elif  seconds:
         tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
     elif rotations:
@@ -52,11 +52,11 @@ def turn_left(speed, rspeed, lspeed, rotations, pos, seconds, turn_angle, brake,
         return
     
 
-def turn_right(speed, rspeed, lspeed, rotations, pos, seconds, turn_angle, brake, block):
+def turn_right(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
-    if turn_angle:
-        tank_drive.turn_left(speed=speed, turn_angle=turn_angle, brake=brake)
+    if target_angle:
+        tank_drive.turn_left(speed=speed, target_angle=target_angle, brake=brake)
     elif  seconds:
         tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
     elif rotations:
