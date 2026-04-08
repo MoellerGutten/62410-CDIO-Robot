@@ -42,26 +42,44 @@ def main():
                 args = msg.instruction.args
                 if type == InstructionType.COMMAND:
                     if cmd == CommandName.FORWARD:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         forward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         backward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.TANK_LEFT:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         turn(-args.lspeed, -args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                     elif cmd == CommandName.TANK_RIGHT:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         turn(args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                     elif cmd == CommandName.BALL_IN:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         balls_in(args.speed, args.rotations, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.BALL_OUT:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         balls_out(args.speed, args.rotations, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.BALL_OFF:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         balls_off(args.brake, args.block)
                     elif cmd == CommandName.TALK:
+                        reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                         talk_function(args.talk)
                     else:
                         reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", str(cmd)])).encode("utf-8")
                         conn.sendall(reply)
                 elif type == InstructionType.SEQUENCE:
                         if cmd == "bust":
+                            reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                            conn.sendall(reply)
                             bust(args.speed)
                         else:
                             reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", str(cmd)])).encode("utf-8")
@@ -72,9 +90,6 @@ def main():
                 else:
                     reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", str(cmd)])).encode("utf-8")
                     conn.sendall(reply)
-
-                reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                conn.sendall(reply)
 
     finally:
         srv.close()
