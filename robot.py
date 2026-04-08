@@ -36,13 +36,12 @@ def main():
                 # Debug
                 print(msg)
                 msg = parse_message(msg)
-
+                
                 cmd = msg.instruction.name
                 type = msg.instruction.type
                 args = msg.instruction.args
-
-                if type == InstructionType.COMMAND:
-                    if cmd == "fwd" :
+                if type == InstructionType.COMMAND.value:
+                    if cmd == "fwd":
                         forward(args.speed, args.rotations, args.pos, args.seconds, args.brake, args.block)
                     elif cmd == "bwd" and args.speed and (args.rotations or args.pos or args.seconds):
                         backward(args.speed, args.rotations, args.pos, args.seconds, args.brake, args.block)
@@ -59,23 +58,23 @@ def main():
                     elif cmd == "t":
                         talk_function(args.talk)
                     else:
-                        reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", cmd]))
+                        reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", cmd])).encode("utf-8")
                         conn.sendall(reply)
-                elif type == InstructionType.SEQUENCE:
+                elif type == InstructionType.SEQUENCE.value:
                         if cmd == "bust":
                             bust(args.speed)
                         else:
-                            reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", cmd]))
+                            reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", cmd])).encode("utf-8")
                             conn.sendall(reply)
-                elif type == InstructionType.REQUEST:
+                elif type == InstructionType.REQUEST.value:
                     pass
                     # TODO: add request functions here
                 else:
-                    reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", cmd]))
+                    reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", cmd])).encode("utf-8")
                     conn.sendall(reply)
 
-            reply = serialize_ack(Acknowledgement('ACK', data=["command", cmd]))
-            conn.sendall(reply)
+                reply = serialize_ack(Acknowledgement('ACK', data=["command", cmd])).encode("utf-8")
+                conn.sendall(reply)
 
     finally:
         srv.close()
