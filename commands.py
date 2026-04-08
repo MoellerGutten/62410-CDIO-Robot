@@ -82,10 +82,10 @@ def balls_out(speed, rotations, seconds, brake, block):
 
 
 def panic(brake):
-    tank_drive.off(brake)
+    tank_drive.stop(brake)
 
 def balls_off(brake, block):
-    ballMotor.off()
+    ballMotor.stop()
 
 def talk_function(talk):
     sound = Sound()
