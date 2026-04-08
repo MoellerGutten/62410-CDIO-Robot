@@ -41,7 +41,7 @@ def turn(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
     tank_drive.gyro.calibrate()
     if target_angle:
-        while tank_drive.gyro.angle() < target_angle:
+        while tank_drive.gyro.angle < target_angle:
             try:
                 angle, rate = tank_drive.gyro.angle_and_rate
                 print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
