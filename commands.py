@@ -46,7 +46,7 @@ def turn_left(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, bloc
     elif rotations:
         tank_drive.on_for_rotations(lspeed, rspeed, rotations, brake, block)
     elif pos:
-        tank_drive.on_for_position(lspeed, 0, pos, brake, block)
+        tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
     else:
         return
     
