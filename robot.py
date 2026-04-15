@@ -67,7 +67,7 @@ def main():
                     elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
                         backward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
                     elif cmd == CommandName.TANK_LEFT:
-                        turn(-args.lspeed, -args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                        turn(args.speed, -args.lspeed, -args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                     elif cmd == CommandName.TANK_RIGHT:
                         turn(args.speed, args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                     elif cmd == CommandName.BALL_IN:
