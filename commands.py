@@ -40,6 +40,26 @@ def backward(speed, rotations, pos, seconds, brake, block):
         return
     
 
+def turn_left(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
+    if  seconds:
+        tank_drive.on_for_seconds(lspeed, 0, seconds, brake, block)
+    elif rotations:
+        tank_drive.on_for_rotations(lspeed, 0, rotations, brake, block)
+    elif pos:
+        tank_drive.on_for_position(lspeed, 0, pos, brake, block)
+    else:
+        return
+    
+def turn_right(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
+    if  seconds:
+        tank_drive.on_for_seconds(0, rspeed, seconds, brake, block)
+    elif rotations:
+        tank_drive.on_for_rotations(0, rspeed, rotations, brake, block)
+    elif pos:
+        tank_drive.on_for_position(0, rspeed, pos, brake, block)
+    else:
+        return
+
 def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     if target_angle:
         try:
