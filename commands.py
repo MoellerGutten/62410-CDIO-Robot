@@ -5,17 +5,16 @@ from ev3dev2.sensor.lego import TouchSensor
 from ev3dev2.led import Leds
 from ev3dev2.sensor.lego import GyroSensor
 
-try:
-    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    ballMotor = MediumMotor(OUTPUT_C)
 
-        # Initialize the tank's gyro sensor
-    tank_drive.gyro = GyroSensor()
+tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+ballMotor = MediumMotor(OUTPUT_C)
 
-    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
-    tank_drive.gyro.calibrate()
-except:
-    pass
+    # Initialize the tank's gyro sensor
+tank_drive.gyro = GyroSensor()
+
+# Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
+tank_drive.gyro.calibrate()
+
 
 
 def forward(speed, rotations, pos, seconds, brake, block):
