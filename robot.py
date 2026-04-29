@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
+import signal
+import atexit
 import socket as socket
 from commands import *
 from sequences import *
 from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName
-
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
@@ -12,19 +13,43 @@ PORT = 9999        # pick any unused port >1024
 # Global flag to control gyro monitoring thread
 monitoring = False
 
+# Global references for cleanup
+_srv = None
+_conn = None
+_shutdown_called = False
+
+def shutdown(signum=None, frame=None):
+    global _shutdown_called
+    if _shutdown_called:
+        return
+    _shutdown_called = True
+
+    panic(brake=True)
+    balls_off(brake=True, block=True)
+
+
 def main():
+    global _srv, _conn
+
+    # Register shutdown for signals and normal exit
+    signal.signal(signal.SIGINT, shutdown)
+    signal.signal(signal.SIGTERM, shutdown)
+    atexit.register(shutdown)
+
     # Create TCP socket
     srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Reuse address to restart quickly
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     srv.bind((HOST, PORT))
     srv.listen(1)
+    _srv = srv
 
     print("EV3 server listening on port", PORT)
    
 
     try:
         conn, addr = srv.accept()
+        _conn = conn
         print("Connected by", addr)
 
         with conn:
