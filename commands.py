@@ -15,6 +15,17 @@ except Exception as e:
 
 def forward(speed, rotations, pos, seconds, brake, block):
     if seconds:
+        tank_drive.on_for_seconds(left_speed=-speed, right_speed=-speed, seconds=seconds, brake=brake, block=block)
+    elif rotations:
+        tank_drive.on_for_rotations(left_speed=-speed, right_speed=-speed, rotations=rotations, brake=brake, block=block)
+    elif pos:
+        tank_drive.on_for_position(left_speed=-speed, right_speed=-speed, pos=pos, brake=brake, block=block)
+    else:
+        return
+        
+
+def backward(speed, rotations, pos, seconds, brake, block):
+    if seconds:
         tank_drive.on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
     elif rotations:
         tank_drive.on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
@@ -22,36 +33,25 @@ def forward(speed, rotations, pos, seconds, brake, block):
         tank_drive.on_for_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
     else:
         return
-        
-
-def backward(speed, rotations, pos, seconds, brake, block):
-    if seconds:
-        tank_drive.on_for_seconds(left_speed=-speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
-    elif rotations:
-        tank_drive.on_for_rotations(left_speed=-speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
-    elif pos:
-        tank_drive.on_for_position(left_speed=-speed, right_speed=speed, pos=pos, brake=brake, block=block)
-    else:
-        return
     
 
 def turn_left(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     if  seconds:
-        tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
+        tank_drive.on_for_seconds(-lspeed, -rspeed, seconds, brake, block)
     elif rotations:
-        tank_drive.on_for_rotations(lspeed, rspeed, rotations, brake, block)
+        tank_drive.on_for_rotations(-lspeed, -rspeed, rotations, brake, block)
     elif pos:
-        tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
+        tank_drive.on_for_position(-lspeed, -rspeed, pos, brake, block)
     else:
         return
     
 def turn_right(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     if  seconds:
-        tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
+        tank_drive.on_for_seconds(-lspeed, -rspeed, seconds, brake, block)
     elif rotations:
-        tank_drive.on_for_rotations(lspeed, rspeed, rotations, brake, block)
+        tank_drive.on_for_rotations(-lspeed, -rspeed, rotations, brake, block)
     elif pos:
-        tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
+        tank_drive.on_for_position(-lspeed, -rspeed, pos, brake, block)
     else:
         return
 ### Deprecated ###
@@ -80,22 +80,22 @@ def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, bl
 # Speed is negative because of the gearing on the current robot
 def balls_in(speed, rotations, seconds, brake, block):
     if seconds:
-        ballMotor.on_for_seconds(speed, seconds, brake, block)
-    elif rotations:
-        ballMotor.on_for_rotations(speed, rotations, brake, block)
-    else:
-        # Default in
-        ballMotor.on(speed, brake, block)
-    
-
-def balls_out(speed, rotations, seconds, brake, block):
-    if seconds:
         ballMotor.on_for_seconds(-speed, seconds, brake, block)
     elif rotations:
         ballMotor.on_for_rotations(-speed, rotations, brake, block)
     else:
-        # Default out
+        # Default in
         ballMotor.on(-speed, brake, block)
+    
+
+def balls_out(speed, rotations, seconds, brake, block):
+    if seconds:
+        ballMotor.on_for_seconds(speed, seconds, brake, block)
+    elif rotations:
+        ballMotor.on_for_rotations(speed, rotations, brake, block)
+    else:
+        # Default out
+        ballMotor.on(speed, brake, block)
 
 
 def panic(brake):
