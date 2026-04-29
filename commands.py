@@ -9,11 +9,6 @@ try:
     tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
     ballMotor = MediumMotor(OUTPUT_C)
 
-        # Initialize the tank's gyro sensor
-    tank_drive.gyro = GyroSensor()
-
-    # Calibrate the gyro to eliminate drift, and to initialize the current angle as 0
-    tank_drive.gyro.calibrate()
 except Exception as e:
     print(e)
 
@@ -59,7 +54,8 @@ def turn_right(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, blo
         tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
     else:
         return
-
+### Deprecated ###
+"""
 def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
     if target_angle:
         try:
@@ -79,7 +75,7 @@ def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, bl
         tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
     else:
         return
-    
+"""
     
 # Speed is negative because of the gearing on the current robot
 def balls_in(speed, rotations, seconds, brake, block):
