@@ -4,13 +4,10 @@ from ev3dev2.sensor import INPUT_1
 from ev3dev2.sensor.lego import TouchSensor
 from ev3dev2.led import Leds
 from ev3dev2.sensor.lego import GyroSensor
+from robot import Motors
 
-try:
-    tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
-    ballMotor = MediumMotor(OUTPUT_C)
-
-except Exception as e:
-    print(e)
+tank_drive = Motors.getTankDrive()
+ballMotor = Motors.getBallMotor()
 
 
 def forward(speed, rotations, pos, seconds, brake, block):

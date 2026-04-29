@@ -2,15 +2,32 @@
 
 import socket as socket
 from commands import *
+from requests import getRequest
 from sequences import *
-from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName
+from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName, RequestName
 
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
+class Motors:
+    def __init__(self):
+        try:
+            self.tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
+            self.ballMotor = MediumMotor(OUTPUT_C)
+        except Exception as e:
+            print(e)
+            print("Left large motor should be in: Output A\n" \
+            "Right large motor should be in: Output B\n" \
+            "Ball motor (front) should be in: Output C\n" \
+            "\n Double check all connections for loose wires, and try again")
 
-# Global flag to control gyro monitoring thread
-monitoring = False
+    def getTankDrive(self):
+        return self.tank_drive
+
+    def getBallMotor(self):
+        return self.ballMotor
+
+motors = Motors()
 
 def main():
     # Create TCP socket
@@ -52,14 +69,20 @@ def main():
                             reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", str(cmd)])).encode("utf-8")
                             conn.sendall(reply)
                 elif type == InstructionType.REQUEST:
-                    pass
-                    # TODO: add request functions here
+                    if cmd not in [RequestName.SPEED, RequestName.ISRUNNING, RequestName.ISHOLDING, RequestName.ISRAMPING, RequestName.ISOVERLOADED]:
+                        reply = serialize_ack(Acknowledgement('NAK', data=["unknown_request", str(cmd)])).encode("utf-8")
+                        conn.sendall(reply)
                 else:
                     reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", str(cmd)])).encode("utf-8")
                     conn.sendall(reply)
 
-                reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-                conn.sendall(reply)
+                # If it is a request, send the ack 
+                if type == InstructionType.REQUEST:
+                    reply = serialize_ack(Acknowledgement('ACK', data=["data", str(getRequest(cmd))])).encode("utf-8")
+                    conn.sendall(reply)
+                else:
+                    reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                    conn.sendall(reply)
 
                 if type == InstructionType.COMMAND:
                     if cmd == CommandName.FORWARD:
@@ -83,9 +106,6 @@ def main():
                 elif type == InstructionType.SEQUENCE:
                         if cmd == "bust":
                             bust(args.speed)
-                elif type == InstructionType.REQUEST:
-                    pass
-                    # TODO: add request functions here
 
 
     finally:
