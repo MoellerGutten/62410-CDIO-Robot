@@ -76,7 +76,7 @@ def main():
                     reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", str(cmd)])).encode("utf-8")
                     conn.sendall(reply)
 
-                # If it is a request, send the ack 
+                # If it is a request, send the request with ack
                 if type == InstructionType.REQUEST:
                     reply = serialize_ack(Acknowledgement('ACK', data=["data", str(getRequest(cmd))])).encode("utf-8")
                     conn.sendall(reply)
