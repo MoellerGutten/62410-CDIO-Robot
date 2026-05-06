@@ -28,6 +28,7 @@ class Motors:
     def getBallMotor(self):
         return self.ballMotor
 
+global motors        
 motors = Motors()
 
 # Global references for cleanup

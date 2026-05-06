@@ -1,8 +1,8 @@
-import robot 
+from robot import motors
 from protocol import RequestName
 
-tank_drive = robot.motors.getTankDrive()
-ballMotor = robot.motors.getBallMotor()
+tank_drive = motors.getTankDrive()
+ballMotor = motors.getBallMotor()
 
 
 def getRequest(cmd):
