@@ -4,7 +4,6 @@ import signal
 import atexit
 import socket as socket
 from commands import *
-from requests import getRequest
 from sequences import *
 from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName, RequestName
 
@@ -27,8 +26,7 @@ class Motors:
 
     def getBallMotor(self):
         return self.ballMotor
-
-global motors        
+     
 motors = Motors()
 
 # Global references for cleanup
@@ -48,6 +46,7 @@ def shutdown(signum=None, frame=None):
 
 def main():
     global _srv, _conn
+    from requests import getRequest
 
     # Register shutdown for signals and normal exit
     signal.signal(signal.SIGINT, shutdown)
