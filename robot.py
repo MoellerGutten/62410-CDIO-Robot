@@ -76,7 +76,7 @@ def main():
                     break
                 raw_msg = data.decode("utf-8").strip()
                 # Debug
-                print(raw_msg)
+                print(f"{raw_msg!r}")
                 msgs = parse_message(raw_msg)
                 for msg in msgs:
                     cmd = msg.instruction.name
