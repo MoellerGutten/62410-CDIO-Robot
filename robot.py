@@ -83,7 +83,7 @@ def receive_commands(conn):
         return False
     raw_msg = data.decode("utf-8").strip()
     # Debug
-    print(f"{raw_msg!r}")
+    print(repr(raw_msg))
     msgs = parse_message(raw_msg)
     for msg in msgs:
         try:
