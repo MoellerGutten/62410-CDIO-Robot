@@ -86,9 +86,13 @@ def receive_commands(conn):
     print(raw_msg)
     msgs = parse_message(raw_msg)
     for msg in msgs:
-        cmd = msg.instruction.name
-        type = msg.instruction.type
-        args = msg.instruction.args
+        try:
+            cmd = msg.instruction.name
+            type = msg.instruction.type
+            args = msg.instruction.args
+        except:
+            reply = serialize_ack(Acknowledgement('NAK', data=["unknown_error", str(msg)])).encode("utf-8")
+            conn.sendall(reply)
 
         # Sends ACK or NACK before starting the instruction below
         if type == InstructionType.COMMAND:
