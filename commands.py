@@ -4,11 +4,11 @@ from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B
 def forward(speed, rotations, pos, seconds, brake, block):
     from robot import getMotors
     if seconds:
-        getMotors().getTankDrive().on_for_seconds(left_speed=-speed, right_speed=-speed, seconds=seconds, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
     elif rotations:
-        getMotors().getTankDrive().on_for_rotations(left_speed=-speed, right_speed=-speed, rotations=rotations, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
     elif pos:
-        getMotors().getTankDrive().on_for_position(left_speed=-speed, right_speed=-speed, pos=pos, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
     else:
         return
         
