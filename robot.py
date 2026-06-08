@@ -143,5 +143,8 @@ def receive_commands(conn):
                 if cmd == "bust":
                     bust(args.speed)
 
+def getMotors():
+    return motors
+
 if __name__ == "__main__":
     main()
