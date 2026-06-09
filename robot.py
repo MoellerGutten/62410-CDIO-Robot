@@ -4,6 +4,7 @@ import signal
 import atexit
 import socket as socket
 from commands import *
+from presets.preset_config import current_preset
 from sequences import *
 from requests import getRequest
 from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName, RequestName
@@ -80,6 +81,8 @@ def main():
 
 
 def receive_commands(conn):
+    # Load options for robot (switch motor direction, turn direction, speed modifier etc.)
+    PRESET = current_preset
     data = conn.recv(1024)
     if not data:
         return False
@@ -123,17 +126,24 @@ def receive_commands(conn):
 
         if type == InstructionType.COMMAND:
             if cmd == CommandName.FORWARD:
-                forward(-args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
+                forward(args.speed * int(PRESET.reverse_motor) * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.brake, args.block)
             elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
-                backward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
+                backward(args.speed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.brake, args.block)
             elif cmd == CommandName.TANK_LEFT:
-                turn_left(args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                if PRESET.reverse_direction:
+                    turn_left(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                else:
+                    turn_left(args.rspeed * PRESET.speed_modifier, args.rlspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
             elif cmd == CommandName.TANK_RIGHT:
-                turn_right(args.lspeed, args.rspeed, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                if PRESET.reverse_direction:
+                    turn_right(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                else:
+                    turn_right(args.rspeed * PRESET.speed_modifier, args.lspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+
             elif cmd == CommandName.BALL_IN:
-                balls_in(args.speed, args.rotations, args.seconds, args.brake, args.block)
+                balls_in(args.speed * PRESET.speed_modifier, args.rotations, args.seconds, args.brake, args.block)
             elif cmd == CommandName.BALL_OUT:
-                balls_out(args.speed, args.rotations, args.seconds, args.brake, args.block)
+                balls_out(args.speed * PRESET.speed_modifier, args.rotations, args.seconds, args.brake, args.block)
             elif cmd == CommandName.BALL_OFF:
                 balls_off(args.brake, args.block)
             elif cmd == CommandName.PANIC:
