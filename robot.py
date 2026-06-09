@@ -123,7 +123,7 @@ def receive_commands(conn):
 
         if type == InstructionType.COMMAND:
             if cmd == CommandName.FORWARD:
-                forward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
+                forward(-args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
             elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
                 backward(args.speed, args.rotations, args.position, args.seconds, args.brake, args.block)
             elif cmd == CommandName.TANK_LEFT:
