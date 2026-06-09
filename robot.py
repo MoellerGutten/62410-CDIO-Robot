@@ -140,7 +140,7 @@ def receive_commands(conn):
             elif cmd == CommandName.TALK:
                 talk_function(args.talk)
         elif type == InstructionType.SEQUENCE:
-                if cmd == "bust":
+                if cmd == SequenceName.EJECT:
                     bust(args.speed)
 
 if __name__ == "__main__":
