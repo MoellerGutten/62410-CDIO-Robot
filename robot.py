@@ -5,7 +5,9 @@ import atexit
 import socket as socket
 from commands import *
 from sequences import *
+from requests import getRequest
 from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName, RequestName
+from ev3dev2.motor import MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, MoveTank
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
@@ -82,10 +84,9 @@ def receive_commands(conn):
     if not data:
         return False
     raw_msg = data.decode("utf-8").strip()
-    # Debug
-    print(repr(raw_msg))
     msgs = parse_message(raw_msg)
     for msg in msgs:
+        print(repr(msg))
         try:
             cmd = msg.instruction.name
             type = msg.instruction.type
@@ -142,6 +143,9 @@ def receive_commands(conn):
         elif type == InstructionType.SEQUENCE:
                 if cmd == SequenceName.EJECT:
                     bust(args.speed)
+
+def getMotors():
+    return motors
 
 if __name__ == "__main__":
     main()

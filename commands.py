@@ -1,105 +1,82 @@
 from ev3dev2.sound import Sound # pyright: ignore[reportMissingImports]
-from ev3dev2.motor import LargeMotor, MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, OUTPUT_D, SpeedPercent, MoveTank
-from ev3dev2.sensor import INPUT_1
-from ev3dev2.sensor.lego import TouchSensor
-from ev3dev2.led import Leds
-from ev3dev2.sensor.lego import GyroSensor
-from robot import motors
-
-tank_drive = motors.getTankDrive()
-ballMotor = motors.getBallMotor()
-
+from ev3dev2.motor import LargeMotor, OUTPUT_A, OUTPUT_B
 
 def forward(speed, rotations, pos, seconds, brake, block):
+    from robot import getMotors
     if seconds:
-        tank_drive.on_for_seconds(left_speed=-speed, right_speed=-speed, seconds=seconds, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
     elif rotations:
-        tank_drive.on_for_rotations(left_speed=-speed, right_speed=-speed, rotations=rotations, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
     elif pos:
-        tank_drive.on_for_position(left_speed=-speed, right_speed=-speed, pos=pos, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
     else:
         return
         
 
 def backward(speed, rotations, pos, seconds, brake, block):
+    from robot import getMotors
     if seconds:
-        tank_drive.on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_seconds(left_speed=speed, right_speed=speed, seconds=seconds, brake=brake, block=block)
     elif rotations:
-        tank_drive.on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_rotations(left_speed=speed, right_speed=speed, rotations=rotations, brake=brake, block=block)
     elif pos:
-        tank_drive.on_for_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
+        getMotors().getTankDrive().on_for_position(left_speed=speed, right_speed=speed, pos=pos, brake=brake, block=block)
     else:
         return
     
 
 def turn_left(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
+    from robot import getMotors
     if  seconds:
-        tank_drive.on_for_seconds(-lspeed, -rspeed, seconds, brake, block)
+        getMotors().getTankDrive().on_for_seconds(-lspeed, -rspeed, seconds, brake, block)
     elif rotations:
-        tank_drive.on_for_rotations(-lspeed, -rspeed, rotations, brake, block)
+        getMotors().getTankDrive().on_for_rotations(-lspeed, -rspeed, rotations, brake, block)
     elif pos:
-        tank_drive.on_for_position(-lspeed, -rspeed, pos, brake, block)
+        getMotors().getTankDrive().on_for_position(-lspeed, -rspeed, pos, brake, block)
     else:
         return
     
 def turn_right(rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
+    from robot import getMotors
     if  seconds:
-        tank_drive.on_for_seconds(-lspeed, -rspeed, seconds, brake, block)
+        getMotors().getTankDrive().on_for_seconds(-lspeed, -rspeed, seconds, brake, block)
     elif rotations:
-        tank_drive.on_for_rotations(-lspeed, -rspeed, rotations, brake, block)
+        getMotors().getTankDrive().on_for_rotations(-lspeed, -rspeed, rotations, brake, block)
     elif pos:
-        tank_drive.on_for_position(-lspeed, -rspeed, pos, brake, block)
+        getMotors().getTankDrive().on_for_position(-lspeed, -rspeed, pos, brake, block)
     else:
         return
-### Deprecated ###
-"""
-def turn(speed, rspeed, lspeed, rotations, pos, seconds, target_angle, brake, block):
-    if target_angle:
-        try:
-            # TODO: This is always blocking. Should be removed or handled otherwise because the gyro doesnt work lmao
-            tank_drive.turn_degrees(speed=speed, target_angle=target_angle, brake=brake)
-            angle, rate = tank_drive.gyro.angle_and_rate
-            print("Gyro - Angle: " + str(angle) + "deg, Rate: " + str(rate) + "deg/s")
-        except OSError:
-            # Gyro is temporarily inaccessible (being used by main thread)
-            pass
-
-    elif  seconds:
-        tank_drive.on_for_seconds(lspeed, rspeed, seconds, brake, block)
-    elif rotations:
-        tank_drive.on_for_rotations(lspeed, rspeed, rotations, brake, block)
-    elif pos:
-        tank_drive.on_for_position(lspeed, rspeed, pos, brake, block)
-    else:
-        return
-"""
     
 # Speed is negative because of the gearing on the current robot
 def balls_in(speed, rotations, seconds, brake, block):
+    from robot import getMotors
     if seconds:
-        ballMotor.on_for_seconds(-speed, seconds, brake, block)
+        getMotors().getBallMotor().on_for_seconds(-speed, seconds, brake, block)
     elif rotations:
-        ballMotor.on_for_rotations(-speed, rotations, brake, block)
+        getMotors().getBallMotor().on_for_rotations(-speed, rotations, brake, block)
     else:
         # Default in
-        ballMotor.on(-speed, brake, block)
+        getMotors().getBallMotor().on(-speed, brake, block)
     
 
 def balls_out(speed, rotations, seconds, brake, block):
+    from robot import getMotors
     if seconds:
-        ballMotor.on_for_seconds(speed, seconds, brake, block)
+        getMotors().getBallMotor().on_for_seconds(speed, seconds, brake, block)
     elif rotations:
-        ballMotor.on_for_rotations(speed, rotations, brake, block)
+        getMotors().getBallMotor().on_for_rotations(speed, rotations, brake, block)
     else:
         # Default out
-        ballMotor.on(speed, brake, block)
+        getMotors().getBallMotor().on(speed, brake, block)
 
 
 def panic(brake):
-    tank_drive.off([LargeMotor(OUTPUT_A), LargeMotor(OUTPUT_B)],brake)
+    from robot import getMotors
+    getMotors().getTankDrive().off([LargeMotor(OUTPUT_A), LargeMotor(OUTPUT_B)],brake)
 
 def balls_off(brake, block):
-    ballMotor.stop()
+    from robot import getMotors
+    getMotors().getBallMotor().stop()
 
 def talk_function(talk):
     sound = Sound()
