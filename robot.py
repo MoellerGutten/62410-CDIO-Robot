@@ -133,7 +133,7 @@ def receive_commands(conn):
                 if PRESET.reverse_direction:
                     turn_left(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
                 else:
-                    turn_left(args.rspeed * PRESET.speed_modifier, args.rlspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                    turn_left(args.rspeed * PRESET.speed_modifier, args.lspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
             elif cmd == CommandName.TANK_RIGHT:
                 if PRESET.reverse_direction:
                     turn_right(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
