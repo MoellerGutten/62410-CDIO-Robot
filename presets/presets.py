@@ -1,5 +1,5 @@
 class RobotPreset(object):
-    def __init__(self, reverse_motor=False, speed_modifier=1, reverse_direction=False):
+    def __init__(self, reverse_motor=1, speed_modifier=1, reverse_direction=False):
         if speed_modifier <= 0:
             raise ValueError("speed_modifier must be positive")
 
@@ -8,6 +8,6 @@ class RobotPreset(object):
         self.reverse_direction = reverse_direction
 
 
-PRESET_A = RobotPreset(reverse_motor=False, speed_modifier=1, reverse_direction=True)
-PRESET_B = RobotPreset(reverse_motor=False, speed_modifier=1, reverse_direction=True)
+PRESET_A = RobotPreset(reverse_motor=-1, speed_modifier=1, reverse_direction=True)
+PRESET_B = RobotPreset(reverse_motor=-1, speed_modifier=1, reverse_direction=True)
 # More presets here...
