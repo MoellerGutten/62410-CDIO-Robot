@@ -8,6 +8,6 @@ class RobotPreset(object):
         self.reverse_direction = reverse_direction
 
 
-PRESET_A = RobotPreset(reverse_motor=True, speed_modifier=1, reverse_direction=True)
+PRESET_A = RobotPreset(reverse_motor=False, speed_modifier=1, reverse_direction=True)
 PRESET_B = RobotPreset(reverse_motor=False, speed_modifier=1, reverse_direction=True)
 # More presets here...
