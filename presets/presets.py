@@ -2,9 +2,9 @@ from dataclasses import dataclass
 
 @dataclass
 class RobotPreset:
-    reverse_motor: bool = False
-    speed_modifier: float = 1
-    reverse_direction: bool = False
+    reverse_motor = False
+    speed_modifier = 1
+    reverse_direction = False
 
     # Protect against negative speed modifier values
     def __post_init__(self):
