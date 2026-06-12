@@ -90,7 +90,7 @@ def receive_commands(conn):
     raw_msg = data.decode("utf-8").strip()
     msgs = parse_message(raw_msg)
     for msg in msgs:
-        log(repr(msg.instruction) + "\n")
+        log(repr(msg.instruction))
         try:
             cmd = msg.instruction.name
             type = msg.instruction.type
