@@ -9,6 +9,7 @@ from sequences import *
 from requests import getRequest
 from protocol import InstructionType, Acknowledgement, serialize_ack, parse_message, CommandName, SequenceName, RequestName
 from ev3dev2.motor import MediumMotor, OUTPUT_A, OUTPUT_B, OUTPUT_C, MoveTank
+from log import log
 
 HOST = ""          # empty string = listen on all interfaces
 PORT = 9999        # pick any unused port >1024
@@ -18,8 +19,8 @@ class Motors:
             self.tank_drive = MoveTank(OUTPUT_A, OUTPUT_B)
             self.ballMotor = MediumMotor(OUTPUT_C)
         except Exception as e:
-            print(e)
-            print("Left large motor should be in: Output A\n" \
+            log(repr(e))
+            log("Left large motor should be in: Output A\n" \
             "Right large motor should be in: Output B\n" \
             "Ball motor (front) should be in: Output C\n" \
             "\n Double check all connections for loose wires, and try again")
@@ -64,13 +65,13 @@ def main():
     srv.listen(1)
     _srv = srv
 
-    print("EV3 server listening on port", PORT)
+    log("EV3 server listening on port", PORT)
    
     while True:
         try:
             conn, addr = srv.accept()
             _conn = conn
-            print("Connected by", addr)
+            log("Connected by", addr)
 
             with conn:
                 while True:
@@ -89,7 +90,7 @@ def receive_commands(conn):
     raw_msg = data.decode("utf-8").strip()
     msgs = parse_message(raw_msg)
     for msg in msgs:
-        print(repr(msg.instruction) + "\n")
+        log(repr(msg.instruction) + "\n")
         try:
             cmd = msg.instruction.name
             type = msg.instruction.type
