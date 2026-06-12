@@ -65,13 +65,13 @@ def main():
     srv.listen(1)
     _srv = srv
 
-    log("EV3 server listening on port", PORT)
+    log("EV3 server listening on port {}".format(PORT))
    
     while True:
         try:
             conn, addr = srv.accept()
             _conn = conn
-            log("Connected by", addr)
+            log("Connected by {}".format(addr))
 
             with conn:
                 while True:
