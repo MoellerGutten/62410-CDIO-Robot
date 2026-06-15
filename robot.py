@@ -88,7 +88,12 @@ def receive_commands(conn):
     if not data:
         return False
     raw_msg = data.decode("utf-8").strip()
-    msgs = parse_message(raw_msg)
+    try:
+        msgs = parse_message(raw_msg)
+    except:
+        reply = serialize_ack(Acknowledgement('NAK', data=["parsing_error", str(msgs)])).encode("utf-8")
+        conn.sendall(reply)
+
     for msg in msgs:
         log(repr(msg.instruction))
         try:
