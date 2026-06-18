@@ -112,6 +112,9 @@ def main():
             if conn is not None:
                 try:
                     conn.close()
+                    print("Standard connection close. Turning off rob")
+                    panic(brake=True)
+                    balls_off(brake=True, block=True)
                 except Exception:
                     pass
             # Do NOT close _srv here
