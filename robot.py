@@ -96,9 +96,13 @@ def main():
 
             with conn:
                 while not _shutdown_called:
-                    if not receive_commands(conn):
-                        # Connection closed; go back to accept next client
-                        break
+                    try:
+                        if not receive_commands(conn):
+                            # Real connection close
+                            break
+                    except Exception as e:
+                        # Log error but keep the connection alive
+                        print("Error handling command:", e)
         except OSError as e:
             # This is expected when _srv.close() is called in shutdown()
             # e.g. "socket closed"
