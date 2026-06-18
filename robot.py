@@ -65,34 +65,37 @@ def main():
     srv.listen(1)
     _srv = srv
 
-    log("EV3 server listening on port {}".format(PORT))
-   
-    while True:
+    print("EV3 server listening on port", PORT)
+
+    # Use a flag to know when we should exit
+    global _shutdown_called
+
+    while not _shutdown_called:
+        conn = None
         try:
             conn, addr = srv.accept()
             _conn = conn
-            log("Connected by {}".format(addr))
+            print("Connected by", addr)
 
             with conn:
-                    # Inner loop: handle commands for this client
-                    while True:
-                        if not receive_commands(conn):
-                            # Connection closed or error; break to accept next client
-                            break
-        except KeyboardInterrupt:
-            # Let signal handler deal with it
-            break
+                while not _shutdown_called:
+                    if not receive_commands(conn):
+                        # Connection closed; go back to accept next client
+                        break
         except Exception as e:
             # Log unexpected errors but keep server running
             print("Server error:", e)
         finally:
-            # Only close the client connection, not the server
             if conn is not None:
                 try:
                     conn.close()
                 except Exception:
                     pass
-            # Do NOT close srv here; keep listening for new connections
+            # Do NOT close srv here
+
+    # Once shutdown is called, close the server socket and exit main
+    _srv.close()
+    _srv = None
 
 
 def receive_commands(conn):
