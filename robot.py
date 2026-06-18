@@ -95,9 +95,9 @@ def main():
             print("Connected by", addr)
 
             with conn:
-                while not _shutdown_called:
+                while True:
                     try:
-                        if not receive_commands(conn):
+                        if receive_commands(conn) == False:
                             # Real connection close
                             break
                     except Exception as e:
