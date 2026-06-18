@@ -67,9 +67,6 @@ def shutdown(signum=None, frame=None):
 
 def main():
     global _srv, _conn, _shutdown_called
-    from requests import getRequest
-
-    # Reset shutdown flag on each start of main 
     _shutdown_called = False
 
     # Register shutdown for signals and normal exit
@@ -89,26 +86,25 @@ def main():
     while not _shutdown_called:
         conn = None
         try:
-            # This will raise an exception when _srv is closed in shutdown()
             conn, addr = _srv.accept()
             _conn = conn
             print("Connected by", addr)
 
+            # Handle many commands on this single connection
             with conn:
-                while True:
+                while not _shutdown_called:
                     try:
-                        if receive_commands(conn) == False:
-                            # Real connection close
+                        if not receive_commands(conn):
+                            # Client closed connection; go back to accept next client
                             break
                     except Exception as e:
                         # Log error but keep the connection alive
-                        print("Error handling command:", e)
+                        print("Error in receive_commands_loop:", e)
+                        # Don't break; continue waiting for next command
         except OSError as e:
-            # This is expected when _srv.close() is called in shutdown()
-            # e.g. "socket closed"
+            # Expected when _srv.close() is called in shutdown()
             if _shutdown_called:
                 break
-            # Otherwise, unexpected error; log and keep running
             print("Unexpected accept error:", e)
         except Exception as e:
             print("Server error:", e)
@@ -118,88 +114,100 @@ def main():
                     conn.close()
                 except Exception:
                     pass
-            # Do NOT close _srv here; only close it in shutdown()
+            # Do NOT close _srv here
 
-    # At this point, shutdown has already closed _srv and _conn
-    # main just returns, and the program exits
+    # shutdown() has already closed _srv and _conn; main just returns
 
 
 def receive_commands(conn):
-    # Load options for robot (switch motor direction, turn direction, speed modifier etc.)
+    """
+    Loop over commands on a single connection:
+    - Returns False only when the client closes the connection (data == b"")
+    - Returns True on success
+    - Never closes conn itself; exceptions are handled externally
+    """
     PRESET = current_preset
-    data = conn.recv(1024)
-    if not data:
-        return False
-    raw_msg = data.decode("utf-8").strip()
-    try:
-        msgs = parse_message(raw_msg)
-    except:
-        reply = serialize_ack(Acknowledgement('NAK', data=["parsing_error", str(msgs)])).encode("utf-8")
-        conn.sendall(reply)
 
-    for msg in msgs:
-        log(repr(msg.instruction))
+    while True:
+        # Receive one message
         try:
-            cmd = msg.instruction.name
-            type = msg.instruction.type
-            args = msg.instruction.args
-        except:
-            reply = serialize_ack(Acknowledgement('NAK', data=["unknown_error", str(msg)])).encode("utf-8")
-            conn.sendall(reply)
+            data = conn.recv(1024)
+        except OSError as e:
+            # Network error: treat as connection close
+            print("recv OSError:", e)
+            return False
 
-        # Sends ACK or NACK before starting the instruction below
-        if type == InstructionType.COMMAND:
-            if cmd not in [CommandName.FORWARD, CommandName.BACKWARD, CommandName.TANK_LEFT, CommandName.TANK_RIGHT, 
-                    CommandName.BALL_IN, CommandName.BALL_OUT, CommandName.BALL_OFF, CommandName.PANIC, CommandName.TALK]:
-                reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", str(cmd)])).encode("utf-8")
+        if not data:
+            # Client closed the connection
+            return False
+
+        raw_msg = data.decode("utf-8").strip()
+        msgs = parse_message(raw_msg)
+
+        for msg in msgs:
+            print(repr(msg.instruction) + "\n")
+            try:
+                cmd = msg.instruction.name
+                type = msg.instruction.type
+                args = msg.instruction.args
+            except Exception as e:
+                reply = serialize_ack(Acknowledgement('NAK', data=["unknown_error", str(msg)])).encode("utf-8")
                 conn.sendall(reply)
-        elif type == InstructionType.SEQUENCE:
+                continue
+
+            # Validate command/sequence/request
+            if type == InstructionType.COMMAND:
+                if cmd not in [CommandName.FORWARD, CommandName.BACKWARD, CommandName.TANK_LEFT, CommandName.TANK_RIGHT,
+                        CommandName.BALL_IN, CommandName.BALL_OUT, CommandName.BALL_OFF, CommandName.PANIC, CommandName.TALK]:
+                    reply = serialize_ack(Acknowledgement('NAK', data=["unknown_command", str(cmd)])).encode("utf-8")
+                    conn.sendall(reply)
+            elif type == InstructionType.SEQUENCE:
                 if cmd not in [SequenceName.EJECT]:
                     reply = serialize_ack(Acknowledgement('NAK', data=["unknown_sequence", str(cmd)])).encode("utf-8")
                     conn.sendall(reply)
-        elif type == InstructionType.REQUEST:
-            if cmd not in [RequestName.SPEED, RequestName.ISRUNNING, RequestName.ISHOLDING, RequestName.ISRAMPING, RequestName.ISOVERLOADED]:
-                reply = serialize_ack(Acknowledgement('NAK', data=["unknown_request", str(cmd)])).encode("utf-8")
+            elif type == InstructionType.REQUEST:
+                if cmd not in [RequestName.SPEED, RequestName.ISRUNNING, RequestName.ISHOLDING, RequestName.ISRAMPING, RequestName.ISOVERLOADED]:
+                    reply = serialize_ack(Acknowledgement('NAK', data=["unknown_request", str(cmd)])).encode("utf-8")
+                    conn.sendall(reply)
+            else:
+                reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", str(cmd)])).encode("utf-8")
                 conn.sendall(reply)
-        else:
-            reply = serialize_ack(Acknowledgement('NAK', data=["unknown_type", str(cmd)])).encode("utf-8")
-            conn.sendall(reply)
 
-        # If it is a request, send the request with ack
-        if type == InstructionType.REQUEST:
-            reply = serialize_ack(Acknowledgement('ACK', data=["data", str(getRequest(cmd))])).encode("utf-8")
-            conn.sendall(reply)
-        else:
-            reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
-            conn.sendall(reply)
+            # Send ACK/NACK and execute
+            if type == InstructionType.REQUEST:
+                reply = serialize_ack(Acknowledgement('ACK', data=["data", str(getRequest(cmd))])).encode("utf-8")
+                conn.sendall(reply)
+            else:
+                reply = serialize_ack(Acknowledgement('ACK', data=["command", str(cmd)])).encode("utf-8")
+                conn.sendall(reply)
 
-        if type == InstructionType.COMMAND:
-            if cmd == CommandName.FORWARD:
-                forward(args.speed * int(PRESET.reverse_motor) * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.brake, args.block)
-            elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
-                backward(args.speed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.brake, args.block)
-            elif cmd == CommandName.TANK_LEFT:
-                if PRESET.reverse_direction:
-                    turn_left(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
-                else:
-                    turn_left(args.rspeed * PRESET.speed_modifier, args.lspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
-            elif cmd == CommandName.TANK_RIGHT:
-                if PRESET.reverse_direction:
-                    turn_right(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
-                else:
-                    turn_right(args.rspeed * PRESET.speed_modifier, args.lspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+            if type == InstructionType.COMMAND:
+                if cmd == CommandName.FORWARD:
+                    forward(args.speed * int(PRESET.reverse_motor) * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.brake, args.block)
+                elif cmd == CommandName.BACKWARD and args.speed and (args.rotations or args.position or args.seconds):
+                    backward(args.speed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.brake, args.block)
+                elif cmd == CommandName.TANK_LEFT:
+                    if PRESET.reverse_direction:
+                        turn_left(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                    else:
+                        turn_left(args.rspeed * PRESET.speed_modifier, args.lspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                elif cmd == CommandName.TANK_RIGHT:
+                    if PRESET.reverse_direction:
+                        turn_right(args.lspeed * PRESET.speed_modifier, args.rspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
+                    else:
+                        turn_right(args.rspeed * PRESET.speed_modifier, args.lspeed * PRESET.speed_modifier, args.rotations, args.position, args.seconds, args.target_angle, args.brake, args.block)
 
-            elif cmd == CommandName.BALL_IN:
-                balls_in(args.speed * PRESET.speed_modifier, args.rotations, args.seconds, args.brake, args.block)
-            elif cmd == CommandName.BALL_OUT:
-                balls_out(args.speed * PRESET.speed_modifier, args.rotations, args.seconds, args.brake, args.block)
-            elif cmd == CommandName.BALL_OFF:
-                balls_off(args.brake, args.block)
-            elif cmd == CommandName.PANIC:
-                panic(args.brake)
-            elif cmd == CommandName.TALK:
-                talk_function(args.talk)
-        elif type == InstructionType.SEQUENCE:
+                elif cmd == CommandName.BALL_IN:
+                    balls_in(args.speed * PRESET.speed_modifier, args.rotations, args.seconds, args.brake, args.block)
+                elif cmd == CommandName.BALL_OUT:
+                    balls_out(args.speed * PRESET.speed_modifier, args.rotations, args.seconds, args.brake, args.block)
+                elif cmd == CommandName.BALL_OFF:
+                    balls_off(args.brake, args.block)
+                elif cmd == CommandName.PANIC:
+                    panic(args.brake)
+                elif cmd == CommandName.TALK:
+                    talk_function(args.talk)
+            elif type == InstructionType.SEQUENCE:
                 if cmd == SequenceName.EJECT:
                     bust(args.speed)
 
