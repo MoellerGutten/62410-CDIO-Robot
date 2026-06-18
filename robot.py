@@ -135,6 +135,8 @@ def receive_commands(conn):
         except OSError as e:
             # Network error: treat as connection close
             print("recv OSError:", e)
+            panic(brake=True)
+            balls_off(brake=True, block=True)
             return False
 
         if not data:
