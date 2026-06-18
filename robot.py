@@ -74,11 +74,25 @@ def main():
             log("Connected by {}".format(addr))
 
             with conn:
-                while True:
-                    if receive_commands(conn) == False:
-                        break
+                    # Inner loop: handle commands for this client
+                    while True:
+                        if not receive_commands(conn):
+                            # Connection closed or error; break to accept next client
+                            break
+        except KeyboardInterrupt:
+            # Let signal handler deal with it
+            break
+        except Exception as e:
+            # Log unexpected errors but keep server running
+            print("Server error:", e)
         finally:
-            srv.close()
+            # Only close the client connection, not the server
+            if conn is not None:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+            # Do NOT close srv here; keep listening for new connections
 
 
 def receive_commands(conn):
