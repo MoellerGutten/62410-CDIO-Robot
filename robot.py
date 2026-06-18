@@ -38,8 +38,9 @@ _srv = None
 _conn = None
 _shutdown_called = False
 
+
 def shutdown(signum=None, frame=None):
-    global _shutdown_called
+    global _shutdown_called, _srv, _conn
     if _shutdown_called:
         return
     _shutdown_called = True
@@ -47,10 +48,29 @@ def shutdown(signum=None, frame=None):
     panic(brake=True)
     balls_off(brake=True, block=True)
 
+    # Close server socket to break out of accept()
+    if _srv is not None:
+        try:
+            _srv.close()
+        except Exception:
+            pass
+        _srv = None
+
+    # Close client connection if still open
+    if _conn is not None:
+        try:
+            _conn.close()
+        except Exception:
+            pass
+        _conn = None
+
 
 def main():
-    global _srv, _conn
+    global _srv, _conn, _shutdown_called
     from requests import getRequest
+
+    # Reset shutdown flag on each start of main 
+    _shutdown_called = False
 
     # Register shutdown for signals and normal exit
     signal.signal(signal.SIGINT, shutdown)
@@ -59,7 +79,6 @@ def main():
 
     # Create TCP socket
     srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # Reuse address to restart quickly
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     srv.bind((HOST, PORT))
     srv.listen(1)
@@ -67,13 +86,11 @@ def main():
 
     print("EV3 server listening on port", PORT)
 
-    # Use a flag to know when we should exit
-    global _shutdown_called
-
     while not _shutdown_called:
         conn = None
         try:
-            conn, addr = srv.accept()
+            # This will raise an exception when _srv is closed in shutdown()
+            conn, addr = _srv.accept()
             _conn = conn
             print("Connected by", addr)
 
@@ -82,8 +99,14 @@ def main():
                     if not receive_commands(conn):
                         # Connection closed; go back to accept next client
                         break
+        except OSError as e:
+            # This is expected when _srv.close() is called in shutdown()
+            # e.g. "socket closed"
+            if _shutdown_called:
+                break
+            # Otherwise, unexpected error; log and keep running
+            print("Unexpected accept error:", e)
         except Exception as e:
-            # Log unexpected errors but keep server running
             print("Server error:", e)
         finally:
             if conn is not None:
@@ -91,11 +114,10 @@ def main():
                     conn.close()
                 except Exception:
                     pass
-            # Do NOT close srv here
+            # Do NOT close _srv here; only close it in shutdown()
 
-    # Once shutdown is called, close the server socket and exit main
-    _srv.close()
-    _srv = None
+    # At this point, shutdown has already closed _srv and _conn
+    # main just returns, and the program exits
 
 
 def receive_commands(conn):
